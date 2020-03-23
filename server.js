@@ -7,10 +7,11 @@ const logger = require('./logging/logger')
 const PORT = process.env.PORT || 8443
 
 const httpsOptions = {
-    key: fs.readFileSync(path.join(__dirname, 'certs', 'forum-backend-key.pem')),
-    cert: fs.readFileSync(path.join(__dirname, 'certs', 'forum-backend-cert.pem')),
+	key: fs.readFileSync(path.join(__dirname, 'certs', 'user-management-backend-key.pem')),
+    cert: fs.readFileSync(path.join(__dirname, 'certs', 'user-management-backend-cert.pem')),
     ca: [fs.readFileSync(path.join(__dirname, 'certs', 'CA-cert.pem'))],
-    requestCert: true
+    requestCert: true,
+    rejectUnauthorized:false
 }
 
 const server = https.createServer(httpsOptions, app)
