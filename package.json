@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "server": "nodemon server.js"
   },
   "author": "SmokeTrees",
   "license": "MIT",
@@ -13,14 +14,17 @@
     "body-parser": "^1.19.0",
     "bson": "^4.0.3",
     "compression": "^1.7.4",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-sanitizer": "^1.0.5",
     "jsonwebtoken": "^8.5.1",
     "mocha": "^7.1.1",
     "mongodb": "^3.5.5",
+    "mongoose": "^5.9.6",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.2",
     "standard": "^14.3.3",
+    "validator": "^13.0.0",
     "winston": "^3.2.1"
   }
 }
