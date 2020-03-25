@@ -65,7 +65,7 @@ class UserOperations {
       if (err) {
         logger.log(err.errmsg)
       }
-      UserSchema.create({
+      return UserSchema.create({
         name: req.body.username,
         email: req.body.email,
         password: hash
@@ -132,11 +132,31 @@ class UserOperations {
       })
     })
       .catch((err) => {
-        console.log('error')
+        logger.log('error')
         return res.json({
           error: true,
           type: 'database',
           message: 'error deleting user',
+          value: err
+        })
+      })
+  }
+
+  updateUser (req, res) {
+    UserSchema.update({ username: req.body.username }, { $set: req.body })
+      .exec()
+      .then(() => {
+        return res.json({
+          error: false,
+          message: 'user updation successful'
+        })
+      })
+      .catch((err) => {
+        logger.log('error')
+        return res.json({
+          error: true,
+          type: 'database',
+          message: 'error updating user',
           value: err
         })
       })
