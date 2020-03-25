@@ -143,7 +143,7 @@ class UserOperations {
   }
 
   updateUser (req, res) {
-    UserSchema.update({ username: req.body.username }, { $set: req.body })
+    UserSchema.findByIdAndUpdate({ username: req.body.username }, { $set: req.body })
       .exec()
       .then(() => {
         return res.json({
@@ -157,6 +157,25 @@ class UserOperations {
           error: true,
           type: 'database',
           message: 'error updating user',
+          value: err
+        })
+      })
+  }
+
+  findUser (req, res) {
+    UserSchema.findById({ username: req.body.username })
+      .then(() => {
+        return res.json({
+          error: false,
+          message: 'found user'
+        })
+      })
+      .catch((err) => {
+        logger.log('error')
+        return res.json({
+          error: true,
+          type: 'database',
+          message: 'error finding user',
           value: err
         })
       })
