@@ -1,12 +1,15 @@
 const logger = require('./../../logging/logger')
 const UserSchema = require('./user.schema')
+const bcrypt = require('bcrypt')
+
+const saltRounds = 10
 
 UserSchema.deleteMany({})
   .then(() => logger.debug('Database Cleared'))
   .catch(() => logger.debug('Error Cleaning Database'))
 
 class UserOperations {
-  createNewUser (dataObject) {
+  createNewUser (req, res) {
     // // list of all the fields which are required to register a new user
     // const requiredFields = [
     //   "username",
@@ -58,14 +61,124 @@ class UserOperations {
 
     // now since we are sure that the required data fields are passed, insert them via mongoose
     // const user = new UserSchema(dataObject);
+    bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
+      if (err) {
+        logger.log(err.errmsg)
+      }
+      return UserSchema.create({
+        name: req.body.username,
+        email: req.body.email,
+        password: hash
+      }).then((newUser) => {
+        logger.info(`New User ${newUser.username} created`)
+        res.json({
+          error: false,
+          message: 'New User registered successfully'
+        })
+      })
+        .catch((error) => {
+          if (error.errmsg) {
+            logger.error(`DB : ${error.errmsg}`)
+            return res.json({
+              error: true,
+              type: 'database',
+              message: `${error.errmsg}`
+            })
+          }
 
-    return UserSchema.create(dataObject)
+          if (error.errors) {
+            logger.error(`Validation: ${error.message}`)
+            return res.json({
+              error: true,
+              type: 'validation',
+              message: error.message,
+              value: error.value
+            })
+          }
+
+          return res.json({
+            error: true,
+            type: 'undefined',
+            message: 'undefined error',
+            value: error
+          })
+        })
+    })
   }
 
-  deleteUser (username) {
-    return UserSchema.deleteOne({
-      username: username
+  deleteUser (req, res) {
+    if (!req.body.username) {
+      return res.json({
+        error: true,
+        type: 'incomplete',
+        message: 'Username required to delete user'
+      })
+    }
+
+    UserSchema.deleteOne({
+      username: req.body.username
+    }).then((resp) => {
+      if (resp.deletedCount === 1) {
+        return res.json({
+          error: false,
+          message: 'user deletion successful'
+        })
+      }
+
+      return res.json({
+        error: true,
+        type: 'input mismatch',
+        message: 'username not found'
+      })
     })
+      .catch((err) => {
+        logger.log('error')
+        return res.json({
+          error: true,
+          type: 'database',
+          message: 'error deleting user',
+          value: err
+        })
+      })
+  }
+
+  updateUser (req, res) {
+    UserSchema.findByIdAndUpdate({ username: req.body.username }, { $set: req.body })
+      .exec()
+      .then(() => {
+        return res.json({
+          error: false,
+          message: 'user updation successful'
+        })
+      })
+      .catch((err) => {
+        logger.log('error')
+        return res.json({
+          error: true,
+          type: 'database',
+          message: 'error updating user',
+          value: err
+        })
+      })
+  }
+
+  findUser (req, res) {
+    UserSchema.findById({ username: req.body.username })
+      .then(() => {
+        return res.json({
+          error: false,
+          message: 'found user'
+        })
+      })
+      .catch((err) => {
+        logger.log('error')
+        return res.json({
+          error: true,
+          type: 'database',
+          message: 'error finding user',
+          value: err
+        })
+      })
   }
 }
 
