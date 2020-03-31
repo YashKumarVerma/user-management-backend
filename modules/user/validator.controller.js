@@ -34,7 +34,7 @@ class UserValidator {
   //   function to validate birthday
   birthday (date) {
     return (
-      validator.isAfter(Date('01-01-2000')) &&
+      validator.isAfter(Date('01-01-1970')) &&
       validator.ifBefore(Date('01-01-2010'))
     )
   }
