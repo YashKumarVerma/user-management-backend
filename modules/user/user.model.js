@@ -2,7 +2,7 @@ const logger = require('./../../logging/logger')
 const UserSchema = require('./user.schema')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const config = require('./config')
+// const config = require('./config')
 
 const saltRounds = 10
 
@@ -173,9 +173,20 @@ class UserOperations {
       })
   }
 
-  static login (user) {
-    if (user.username && user.password) {
-      UserSchema.find({ username: user.username, password: bcrypt.hashSync(user.password, saltRounds) }).then((user) => {
+  static async login (user) {
+    if ((user.username || user.email) && user.password) {
+      return UserSchema.find({
+        $and: [
+          {
+            $or: [
+              { username: user.username },
+              { email: user.email }
+            ]
+          },
+          {
+            password: bcrypt.hashSync(user.password, saltRounds)
+          }]
+      }).then((user) => {
         if (!user) {
           return {
             status: false,
@@ -183,12 +194,7 @@ class UserOperations {
             message: 'User not found'
           }
         } else {
-          const token = jwt.sign({ username: user.username },
-            config.secret,
-            {
-              expiresIn: '24h'
-            }
-          )
+          const token = jwt.sign({ username: user.username, _id: user._id }, 'testsecrete') //config.secret)
           return {
             status: true,
             error: false,
@@ -207,6 +213,11 @@ class UserOperations {
             value: err
           }
         })
+    }
+    return {
+      status: false,
+      error: false,
+      message: 'missing username or password field'
     }
   }
 }
