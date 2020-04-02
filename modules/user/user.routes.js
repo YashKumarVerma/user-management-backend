@@ -50,4 +50,14 @@ router.get('/:username', async (req, res) => {
   }
 })
 
+router.post('/login', async (req, res) => {
+  const user = req.body.user
+  const response = await UserOperations.login(user)
+  if (response.error) {
+    res.status(400).json(response)
+  } else {
+    res.status(200).json(response)
+  }
+})
+
 module.exports = router
