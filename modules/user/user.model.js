@@ -175,26 +175,28 @@ class UserOperations {
 
   static async login (user) {
     if ((user.username || user.email) && user.password) {
-      return UserSchema.find({
-        $and: [
-          {
-            $or: [
-              { username: user.username },
-              { email: user.email }
-            ]
-          },
-          {
-            password: bcrypt.hashSync(user.password, saltRounds)
-          }]
-      }).then((user) => {
-        if (!user) {
+      return UserSchema.findOne({
+        $or: [
+          { username: user.username },
+          { email: user.email }
+        ]
+      }).then((user1) => {
+        if (!user1) {
           return {
             status: false,
             error: true,
             message: 'User not found'
           }
         } else {
-          const token = jwt.sign({ username: user.username, _id: user._id }, 'testsecrete') //config.secret)
+          const hashRes = bcrypt.compareSync(user.password, user1.password)
+          if (!hashRes) {
+            return {
+              status: false,
+              error: true,
+              message: 'Wrong password'
+            }
+          }
+          const token = jwt.sign({ username: user1.username, _id: user1._id }, 'testsecret') // config.secret)
           return {
             status: true,
             error: false,
