@@ -5,12 +5,13 @@ const UserOperations = require('./user.model')
 
 router.post('/signup', async (req, res) => {
   const user = req.body.user
+  console.log('received object : ', user)
   const response = await UserOperations.createNewUser(user)
   res.status(200).json(response)
 })
 
-router.post('/delete/:username', async (req, res) => {
-  const username = req.params.username
+router.post('/delete', async (req, res) => {
+  const username = req.body.user.username
   const response = await UserOperations.deleteUser(username)
   console.log(response)
   if (response.error) {
@@ -31,7 +32,7 @@ router.post('/update', async (req, res) => {
   }
 })
 
-router.get('/', async (req, res) => {
+router.post('/', async (req, res) => {
   const user = req.body.user
   const response = await UserOperations.findUser(user._id)
   if (response.error) {

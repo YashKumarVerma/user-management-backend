@@ -80,17 +80,16 @@ class UserOperations {
         type: 'input mismatch',
         message: 'username not found'
       }
+    }).catch((err) => {
+      logger.error('error in deleting user')
+      return {
+        status: false,
+        error: true,
+        type: 'database',
+        message: 'error deleting user',
+        value: err
+      }
     })
-      .catch((err) => {
-        logger.error('error in deleting user')
-        return {
-          status: false,
-          error: true,
-          type: 'database',
-          message: 'error deleting user',
-          value: err
-        }
-      })
   }
 
   static updateUser (user) {
@@ -151,7 +150,7 @@ class UserOperations {
           return {
             status: false,
             error: true,
-            message: 'user not found user'
+            message: 'user not found'
           }
         }
         return {
