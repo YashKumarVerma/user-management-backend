@@ -4,13 +4,14 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "node server.js",
     "server": "nodemon server.js"
   },
   "author": "SmokeTrees",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "latest",
     "body-parser": "^1.19.0",
     "bson": "^4.0.3",
     "compression": "^1.7.4",
@@ -18,14 +19,18 @@
     "express": "^4.17.1",
     "express-sanitizer": "^1.0.5",
     "jsonwebtoken": "^8.5.1",
-    "mocha": "^7.1.1",
     "mongodb": "^3.5.5",
     "mongoose": "^5.9.6",
     "morgan": "^1.10.0",
+    "node-fetch": "^2.6.0",
     "nodemon": "^2.0.2",
     "standard": "^14.3.3",
     "validator": "^13.0.0",
-    "winston": "^3.2.1",
-    "bcrypt": "latest"
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^7.1.1",
+    "chai-http": "^4.3.0"
   }
 }

@@ -36,18 +36,18 @@ class UserClient {
     return body
   }
 
-  async delete (user, token) {
-    const res = await fetch(url + '/delete/', {
+  async delete (user) {
+    const res = await fetch(url + '/delete', {
       method: 'POST',
       body: JSON.stringify({ user: user }),
-      headers: { Authorization: token, 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },
       agent
     })
     const body = await res.json()
     return body
   }
 
-  async details (user) {
+  async aboutUser (user) {
     const res = await fetch(url + `/${user}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
@@ -57,9 +57,9 @@ class UserClient {
     return body
   }
 
-  async findUser (user) {
+  async details (user) {
     const res = await fetch(url, {
-      method: 'GET',
+      method: 'POST',
       body: JSON.stringify({ user: user }),
       headers: { 'Content-Type': 'application/json' },
       agent
