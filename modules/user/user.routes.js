@@ -9,8 +9,8 @@ router.post('/signup', async (req, res) => {
   res.status(200).json(response)
 })
 
-router.post('/delete/:username', async (req, res) => {
-  const username = req.params.username
+router.post('/delete', async (req, res) => {
+  const username = req.body.username
   const response = await UserOperations.deleteUser(username)
   console.log(response)
   if (response.error) {
