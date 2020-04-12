@@ -3,10 +3,10 @@ const agent = require('./agent')
 const url = require('./url')
 
 class UserClient {
-  async signup (user, bcryptPwd) {
+  async signup (user) {
     const res = await fetch(url + '/signup', {
       method: 'POST',
-      body: JSON.stringify({ newuser: { id: user._id, username: user.username, email: user.email, password: bcryptPwd } }),
+      body: JSON.stringify({ user: user }),
       headers: { 'Content-Type': 'application/json' },
       agent
     })
@@ -17,7 +17,7 @@ class UserClient {
   async update (user, token) {
     const res = await fetch(url + '/update', {
       method: 'POST',
-      body: JSON.stringify({ newuser: { userobj: user } }),
+      body: JSON.stringify({ user: user }),
       headers: { Authorization: token, 'Content-Type': 'application/json' },
       agent
     })
@@ -25,10 +25,10 @@ class UserClient {
     return body
   }
 
-  async login (user, hashres) {
+  async login (user) {
     const res = await fetch(url + '/login', {
       method: 'POST',
-      body: JSON.stringify({ auth: { id: user._id, email: user.email, username: user.username, hash: hashres } }),
+      body: JSON.stringify({ user: user }),
       headers: { 'Content-Type': 'application/json' },
       agent
     })
