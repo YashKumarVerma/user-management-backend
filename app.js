@@ -4,7 +4,7 @@ const compression = require('compression')
 const sanitizer = require('express-sanitizer')
 const parser = require('body-parser')
 const morgan = require('./logging/morgan')
-const database = require('./modules/mongoose/connect')
+require('./modules/mongoose/connect')
 
 // Middlewares
 app.use(sanitizer())
