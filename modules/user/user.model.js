@@ -195,7 +195,14 @@ class UserOperations {
               message: 'Wrong password'
             }
           }
-          const token = jwt.sign({ username: user1.username, _id: user1._id }, 'testsecret') // config.secret)
+          const token = jwt.sign({
+              username: user1.username,
+              _id: user1._id,
+              allowBlog: user1.allowBlog,
+              firstName: user1.firstName,
+              lastName: user1.lastName,
+            },
+            'testsecret') // config.secret)
           return {
             status: true,
             error: false,

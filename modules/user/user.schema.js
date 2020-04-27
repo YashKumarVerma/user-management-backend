@@ -138,6 +138,11 @@ const user = new mongoose.Schema(
       validate: [UserValidator.link, 'invalid blog link']
     },
 
+    allowBlog: {
+      type: Boolean,
+      default: false
+    },
+
     socialHandles: [
       {
         type: String,

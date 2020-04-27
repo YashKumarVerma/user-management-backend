@@ -3,10 +3,10 @@ const validator = require('validator')
 class UserValidator {
   // function to put validations on username
   username (username) {
-    return (
-      validator.isAlphanumeric(username) &&
-      validator.isLength(username, { min: 4, max: 20 })
-    )
+    // return (
+      // validator.isAlphanumeric(username) &&
+      // validator.isLength(username, { min: 4, max: 20 })
+    // )
   }
 
   //   function to put validation front and last name
