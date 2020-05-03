@@ -14,7 +14,7 @@ class Database {
   _connect () {
     mongoose
       .connect(
-        'mongodb://localhost:27017/smoketrees' || process.env.DB_CONN_STRING,
+        'mongodb://localhost:27017' || process.env.DB_CONN_STRING,
         {
           useNewUrlParser: true,
           useUnifiedTopology: true,

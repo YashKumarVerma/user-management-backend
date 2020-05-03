@@ -4,8 +4,8 @@ class UserValidator {
   // function to put validations on username
   username (username) {
     // return (
-      // validator.isAlphanumeric(username) &&
-      // validator.isLength(username, { min: 4, max: 20 })
+    // validator.isAlphanumeric(username) &&
+    // validator.isLength(username, { min: 4, max: 20 })
     // )
   }
 

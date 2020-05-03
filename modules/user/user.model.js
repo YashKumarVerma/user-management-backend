@@ -196,13 +196,14 @@ class UserOperations {
             }
           }
           const token = jwt.sign({
-              username: user1.username,
-              _id: user1._id,
-              allowBlog: user1.allowBlog,
-              firstName: user1.firstName,
-              lastName: user1.lastName,
-            },
-            'testsecret') // config.secret)
+            username: user1.username,
+            _id: user1._id,
+            allowBlog: user1.allowBlog,
+            firstName: user1.firstName,
+            lastName: user1.lastName,
+            profilePicture: user1.profilePicture
+          },
+          'testsecret') // config.secret)
           return {
             status: true,
             error: false,
