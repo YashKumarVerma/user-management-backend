@@ -61,4 +61,18 @@ router.post('/login', async (req, res) => {
   }
 })
 
+router.get('/search', async (req, res) => {
+  const query = req.query.q
+
+  const response = await UserOperations.search(query)
+
+  if (response.status) {
+    res.status(200).json(response)
+  } else if (response.err) {
+    res.status(500).json(response)
+  } else {
+    res.status(400).json(response)
+  }
+})
+
 module.exports = router

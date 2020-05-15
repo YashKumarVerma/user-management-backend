@@ -12,16 +12,17 @@ class UserOperations {
     try {
       console.log(user)
       user.password = bcrypt.hashSync(user.password, saltRounds)
-      return UserSchema.create(user).then((newUser) => {
-        logger.info(`New User ${newUser.username} created`)
-        response = {
-          status: true,
-          error: false,
-          id: newUser._id,
-          message: 'created a new user'
-        }
-        return response
-      })
+      return UserSchema.create(user)
+        .then((newUser) => {
+          logger.info(`New User ${newUser.username} created`)
+          response = {
+            status: true,
+            error: false,
+            id: newUser._id,
+            message: 'created a new user'
+          }
+          return response
+        })
         .catch((error) => {
           if (error.errmsg) {
             logger.error(`DB : ${error.errmsg}`)
@@ -66,30 +67,32 @@ class UserOperations {
 
     return UserSchema.deleteOne({
       username: username
-    }).then((resp) => {
-      if (resp.deletedCount === 1) {
-        return {
-          status: true,
-          error: false,
-          message: 'user deletion successful'
-        }
-      }
-      return {
-        status: false,
-        error: true,
-        type: 'input mismatch',
-        message: 'username not found'
-      }
-    }).catch((err) => {
-      logger.error('error in deleting user')
-      return {
-        status: false,
-        error: true,
-        type: 'database',
-        message: 'error deleting user',
-        value: err
-      }
     })
+      .then((resp) => {
+        if (resp.deletedCount === 1) {
+          return {
+            status: true,
+            error: false,
+            message: 'user deletion successful'
+          }
+        }
+        return {
+          status: false,
+          error: true,
+          type: 'input mismatch',
+          message: 'username not found'
+        }
+      })
+      .catch((err) => {
+        logger.error('error in deleting user')
+        return {
+          status: false,
+          error: true,
+          type: 'database',
+          message: 'error deleting user',
+          value: err
+        }
+      })
   }
 
   static updateUser (user) {
@@ -175,43 +178,43 @@ class UserOperations {
   static async login (user) {
     if ((user.username || user.email) && user.password) {
       return UserSchema.findOne({
-        $or: [
-          { username: user.username },
-          { email: user.email }
-        ]
-      }).then((user1) => {
-        if (!user1) {
-          return {
-            status: false,
-            error: true,
-            message: 'User not found'
-          }
-        } else {
-          const hashRes = bcrypt.compareSync(user.password, user1.password)
-          if (!hashRes) {
+        $or: [{ username: user.username }, { email: user.email }]
+      })
+        .then((user1) => {
+          if (!user1) {
             return {
               status: false,
               error: true,
-              message: 'Wrong password'
+              message: 'User not found'
+            }
+          } else {
+            const hashRes = bcrypt.compareSync(user.password, user1.password)
+            if (!hashRes) {
+              return {
+                status: false,
+                error: true,
+                message: 'Wrong password'
+              }
+            }
+            const token = jwt.sign(
+              {
+                username: user1.username,
+                _id: user1._id,
+                allowBlog: user1.allowBlog,
+                firstName: user1.firstName,
+                lastName: user1.lastName,
+                profilePicture: user1.profilePicture
+              },
+              'testsecret'
+            ) // config.secret)
+            return {
+              status: true,
+              error: false,
+              message: 'Authentication successful!',
+              token: token
             }
           }
-          const token = jwt.sign({
-            username: user1.username,
-            _id: user1._id,
-            allowBlog: user1.allowBlog,
-            firstName: user1.firstName,
-            lastName: user1.lastName,
-            profilePicture: user1.profilePicture
-          },
-          'testsecret') // config.secret)
-          return {
-            status: true,
-            error: false,
-            message: 'Authentication successful!',
-            token: token
-          }
-        }
-      })
+        })
         .catch((err) => {
           logger.error('error', err)
           return {
@@ -228,6 +231,36 @@ class UserOperations {
       error: false,
       message: 'missing username or password field'
     }
+  }
+
+  static async search (query) {
+    return UserSchema.findById(query)
+      .then((user) => {
+        if (!user) {
+          return {
+            status: false,
+            error: true,
+            message: 'found user',
+            user: user
+          }
+        }
+        return {
+          status: true,
+          error: false,
+          message: 'found user',
+          user: user
+        }
+      })
+      .catch((err) => {
+        logger.error('error')
+        return {
+          status: false,
+          error: true,
+          type: 'database',
+          message: 'error finding user',
+          value: err
+        }
+      })
   }
 }
 
